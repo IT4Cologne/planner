@@ -5,14 +5,33 @@
     <title>Party Planner</title>
 
     <!-- Latest compiled and minified CSS -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
 
 </head>
 <body>
     <br>
     <div class="container">
-        <div class="row">
-            <div name="party-main" class="col-xs-12">
+        <!-- Event Input -->
+        <div name="event-input" class="row">
+            <div class="col-xs-12">
+                <form class="form-inline">
+                    <div class="form-group">
+                        <label class="sr-only" for="InputName">Event name</label>
+                        <input type="text" class="form-control" id="InputName" placeholder="Event name">
+                    </div>
+                    <div class="form-group">
+                        <label class="sr-only" for="InputDesc">Description</label>
+                        <input type="text" class="form-control" id="InputDesc" placeholder="Description">
+                    </div>
+                </form>
+                <button id="event-submit" type="submit" class="btn btn-default">Party!</button>
+                <button id="event-submit-item" type="submit" class="btn btn-default">Add Items</button>
+            </div>
+        </div>
+        <br>
+        <!-- Event Display -->
+        <div name="event-display" class="row">
+            <div name="event-display-main" class="col-xs-12">
                 <div class="panel panel-default">
                     <div class="panel-heading">
                         <h3 id="event-title" class="panel-title"> Name: CHristian Gb </h3>
@@ -20,9 +39,9 @@
                     <div class="panel-body">
                         <div name="panel-desc-row" class="row">
                             <div class="col-xs-12">
-                                <div name="event-desc" id="event-desc">
-                                    <h4>Beschreibung</h4>
-                                    <p> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
+                                <div name="event-body">
+                                    <h1 class="h4">Beschreibung</h1>
+                                    <p id="event-desc"> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut
                                         labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores
                                         et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
                                     </p>
@@ -32,21 +51,8 @@
                         <hr class="intro-divider">
                         <div name="panel-items-row" class="row">
                              <div class="col-xs-12">
-                                <div class="clearfix">
-                                    <ul class="nav nav-pills">
-                                        <li class="active" style="float:left">
-                                             <a href="#"> <span class="badge pull-right">22</span> Cola</a>
-                                        </li>
-                                        <li class="active" style="float:left">
-                                             <a href="#"> <span class="badge pull-right">3</span> Steak</a>
-                                        </li>
-                                        <li class="active" style="float:left">
-                                             <a href="#"> <span class="badge pull-right">1</span> Kohle</a>
-                                        </li>
-                                       <!-- <li>
-                                             <a href="#"> <span class="badge pull-right">16</span> More</a>
-                                        </li>-->
-                                    </ul>
+                                <div id="event-items" class="clearfix">
+                                    <button type="button" class="btn btn-danger">Action</button>
                                 </div>
                             </div>
                         </div>
@@ -58,27 +64,97 @@
             </div>
         </div>
         <div class="row">
-            <div name="party-people" class="col-xs-12">
+            <div name="party-display-people" class="col-xs-12">
 
             </div>
         </div>
+
+        <ul class="nav nav-pills">
+            <li class="active" style="float:left">
+                <a href="#"><span class="badge pull-right">22</span> Cola</a>
+            </li>
+            <li class="active" style="float:left">
+                <a href="#"> <span class="badge pull-right">3</span> Steak</a>
+            </li>
+            <li class="active" style="float:left">
+                <a href="#"> <span class="badge pull-right">1</span> Kohle</a>
+            </li>
+            <!-- <li>
+                  <a href="#"> <span class="badge pull-right">16</span> More</a>
+             </li>-->
+        </ul>
+
+        <!--
+        <div class="input-group number-spinner">
+            <span class="input-group-btn">
+                <button class="btn btn-default" data-dir="dwn"><span class="glyphicon glyphicon-minus"></span></button>
+            </span>
+            <input type="text" class="form-control text-center" value="1">
+            <span class="input-group-btn">
+                <button class="btn btn-default" data-dir="up"><span class="glyphicon glyphicon-plus"></span></button>
+            </span>
+        </div>-->
     </div>
 
-
-    <div class="input-group number-spinner">
-        <span class="input-group-btn">
-            <button class="btn btn-default" data-dir="dwn"><span class="glyphicon glyphicon-minus"></span></button>
-        </span>
-        <input type="text" class="form-control text-center" value="1">
-        <span class="input-group-btn">
-            <button class="btn btn-default" data-dir="up"><span class="glyphicon glyphicon-plus"></span></button>
-        </span>
-    </div>
-
+    <!-- Firebase -->
+    <script src="js/firebase.js"></script>
     <!-- jQuery -->
-    <script src="../js/jquery.js"></script>
+    <script src="js/jquery-2.1.3.min.js"></script>
     <!-- Latest compiled and minified JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+
+    <script>
+        var urlEvents = 'https://eventplanner-v01.firebaseio.com/events';
+        var refEvent = new Firebase(urlEvents);
+        var refEventKey = "";
+        alert("fu");
+
+        $( "#event-submit" ).click(function() {
+            alert("test2");
+            var eventName = $('#InputName').val();
+            var eventDesc = $('#InputDesc').val();
+            //var titleJob = $('#titleJobInput').val();
+            //var url = $('#urlInput').val();
+
+            refEventKey =  refEvent.push({name: eventName, desc: eventDesc, items: "initClient"});
+            setKey(refEventKey);
+            $('#InputName').val('');
+            $('#InputDesc').val('');
+        });
+
+        $( "#event-submit-item" ).click(function () {
+           // var refEventWithKey = new Firebase(refEventKey);
+
+            var refEventItems = new Firebase(refEventKey.toString()+"/items");
+
+            var items = {};
+            //var wuerste = {"count": 4, "measure": "stück"};
+
+            items.wuerste = {"count": 4, "measure": "stück"};
+            items.pizza =
+
+
+
+
+           // refEventKey.update({items:items});
+            refEventItems.transaction( function (current_value) {
+                alert(current_value.toString());
+                return {first: "adasd", second:"adasd"};
+            });
+        });
+
+        function setKey(urlKey) {
+            refEventKey = urlKey;
+            alert(refEventKey);
+        }
+
+        function test() {
+            alert("test");
+        }
+
+
+    </script>
+
 
 </body>
 </html>
